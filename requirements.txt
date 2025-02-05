@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+openai
+langchain
+langchain-openai
+PyYAML
+redis
+pymongo
+requests
