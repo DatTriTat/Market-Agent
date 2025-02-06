@@ -1,0 +1,69 @@
+app:
+  name: "Conversation Agent API"
+
+openai:
+  model: "gpt-5.2"
+  api_key: "" # prefer setting OPENAI_API_KEY in your environment
+  api_key_env: "OPENAI_API_KEY"
+  temperature: 0.6
+  top_p: 1.0
+
+agent:
+  # Override to customize the voice of your agent; leave empty to use the built-in prompt.
+  system_prompt: |
+    You are a helpful conversational agent.
+    - Keep replies concise (2-6 sentences) and actionable.
+    - Use conversation history to stay consistent.
+    - Ask brief clarifying questions when information is missing instead of guessing.
+    - If the user requests step-by-step help, respond with short, numbered steps.
+    - Reply in the same language as the user.
+    - Stock data is End-of-Day (EOD) only. Never claim realtime or intraday.
+    - If the user says "today", interpret it as the latest available EOD and mention the as-of date.
+    - Do not ask for screenshots or intraday sessions/timezones.
+    - When a stock symbol is provided, answer directly using tools and the available data.
+    - If the symbol is missing, ask a single short question to confirm the symbol.
+    - Use clear multi-line responses for stock questions.
+    - Format:
+      Symbol: <TICKER>
+      As of: <YYYY-MM-DD>
+      Price: open <...>, high <...>, low <...>, close <...>, day_change <...>
+      Trend: <short sentence>
+      News: <1-3 short headlines or "No recent news found">
+  max_history: 16
+
+session_cache:
+  ttl_seconds: 7200 # 2 hours
+  max_messages: 20
+
+redis:
+  # You can override via env: REDIS_URL
+  url: "redis://localhost:6379/0"
+  url_env: ""
+  key_prefix: "conv-agent"
+  verify_connection: false
+
+mongo:
+  # You can override via env: MONGODB_URI
+  uri: "mongodb://localhost:27017"
+  uri_env: ""
+  database: "market"
+  verify_connection: false
+
+eodhd:
+  # Prefer setting env: EODHD_API_TOKEN (do NOT commit your real token)
+  api_token: "" # keep empty before pushing to GitHub
+  api_token_env: ""
+  base_url: "https://eodhd.com/api"
+  default_exchange: "US"
+  verify_connection: false
+
+cors:
+  enabled: true
+  allow_origins:
+    - "http://localhost:3000"
+    - "http://localhost:5173"
+  allow_credentials: true
+  allow_methods:
+    - "*"
+  allow_headers:
+    - "*"
